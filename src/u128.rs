@@ -68,6 +68,12 @@ impl U128 {
 
         (result_high, result_low)
     }
+
+    /// Multiply two 128 bit integers
+    /// Returns a tuple of high and low 64 bit integers
+    fn mulc(&self, other: &Self) -> (u64, u64) {
+        unimplemented!()
+    }
 }
 
 mod op_impl {
@@ -87,6 +93,15 @@ mod op_impl {
 
         fn sub(self, other: Self) -> Self {
             let (high, low) = self.subc(&other);
+            Self { high, low }
+        }
+    }
+
+    impl std::ops::Mul for U128 {
+        type Output = Self;
+
+        fn mul(self, other: Self) -> Self {
+            let (high, low) = self.mulc(&other);
             Self { high, low }
         }
     }
@@ -222,4 +237,46 @@ mod test {
         assert_eq!(c.low, u64::MAX);
         assert_eq!(c.high, u64::MAX);
     }
+
+    #[test]
+    fn mul() {
+        let a = U128::from(10u64);
+        let b = U128::from(20u8);
+        let c = a * b;
+        println!("{a:?} ({a}) * {b:?} ({b}) = {c:?} ({c})");
+        assert_eq!(c.low, 200);
+        assert_eq!(c.high, 0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn mul_overflow() {
+        let a = U128::from(u64::MAX);
+        let b = U128::from(2usize);
+        let c = a * b;
+        println!("{a:?} ({a}) * {b:?} ({b}) = {c:?} ({c})");
+        assert_eq!(c.low, u64::MAX - 1);
+        assert_eq!(c.high, 1);
+    }
+
+    // #[test]
+    // fn div() {
+    //     let a = U128::from(20u64);
+    //     let b = U128::from(10u8);
+    //     let c = a / b;
+    //     println!("{a:?} ({a}) / {b:?} ({b}) = {c:?} ({c})");
+    //     assert_eq!(c.low, 2);
+    //     assert_eq!(c.high, 0);
+    // }
+
+    // #[test]
+    // #[should_panic]
+    // fn div_overflow() {
+    //     let a = U128::from(u64::MAX);
+    //     let b = U128::from(0usize);
+    //     let c = a / b;
+    //     println!("{a:?} ({a}) / {b:?} ({b}) = {c:?} ({c})");
+    //     assert_eq!(c.low, u64::MAX);
+    //     assert_eq!(c.high, 0);
+    // }
 }
