@@ -49,5 +49,7 @@ def add(s: str, t: str) -> Tuple[str]:
     
     return lower_bits, higher_bits
 
-low, hi = add("1111111111111111111111111111111111111111111111111111111111111111", "01")
+U64MAX = "1111111111111111111111111111111111111111111111111111111111111111"
+
+low, hi = add(U64MAX, U64MAX)
 print(f"low: {low}, hi: {hi}")
